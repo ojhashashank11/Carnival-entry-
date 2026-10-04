@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnival of Dreams – Entry Register</title>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff4e0;--ink:#2a1245;--card:#fffdf8;--pink:#e8318a;--gold:#f5a800;--teal:#0f9d8e;--mute:#7a6a8f;--line:#e9d9bd;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b0c30;--ink:#fff1d6;--card:#2a1245;--mute:#b9a6d3;--line:#432063;--teal:#38d6c4}}
+:root[data-theme="dark"]{--bg:#1b0c30;--ink:#fff1d6;--card:#2a1245;--mute:#b9a6d3;--line:#432063;--teal:#38d6c4}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.45}
+main{max-width:680px;margin:0 auto;padding:20px 16px 48px}
+header{text-align:center;padding:22px 12px 20px;border-radius:22px;background:#2a1245;color:#fff1d6;border:6px dotted var(--gold)}
+h1{font-family:'Bungee','Impact',sans-serif;font-weight:400;font-size:clamp(28px,8vw,44px);line-height:1;margin:0}
+header p{margin:8px 0 0;color:#f3d9a4;font-size:14px}
+.stripe{height:14px;margin:18px 0;border-radius:8px;background:repeating-linear-gradient(45deg,var(--pink) 0 14px,var(--bg) 14px 28px)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stub{background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:14px;text-align:center}
+.stub small{display:block;color:var(--mute);font-size:13px}
+.stub b{font-family:'Bungee',sans-serif;font-weight:400;font-size:clamp(28px,9vw,44px);line-height:1.15;display:block}
+.stub.rev{background:var(--gold);color:#2a1245;border-color:#2a1245}
+.stub.rev small{color:#5a3a00}
+.panel{margin-top:16px;background:var(--card);border:2px solid var(--ink);border-radius:20px;padding:18px}
+.panel h2{margin:0 0 12px;font-size:18px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:12px;min-height:48px;background:var(--card)}
+.tabs button.on{background:var(--pink);color:#fff}
+.tabs button.on.f{background:var(--teal)}
+label{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+input{font:inherit;width:100%;padding:13px;border:2px solid var(--ink);border-radius:12px;background:var(--bg);color:var(--ink)}
+button{font:inherit;font-weight:700;border:2px solid var(--ink);border-radius:14px;padding:12px 16px;min-height:48px;cursor:pointer;background:var(--card);color:var(--ink);transition:transform .08s}
+button:active{transform:scale(.95)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.step{display:flex;align-items:center;gap:10px}
+.step button{width:52px;font-size:22px;padding:0}
+.step input{text-align:center;font-weight:700;font-size:20px}
+.bill{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:12px 14px;border-radius:14px;background:#f5a80026;font-weight:700}
+.bill b{font-family:'Bungee',sans-serif;font-weight:400;font-size:26px}
+.save{width:100%;margin-top:14px;background:var(--pink);color:#fff;font-size:18px;min-height:54px}
+.save.f{background:var(--teal)}
+.err{color:var(--pink);font-size:14px;margin-top:8px;min-height:18px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--pink);color:#fff}
+.pill.f{background:var(--teal)}
+.entry{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.entry .n{font-weight:700}
+.entry .m{color:var(--mute);font-size:13px}
+.entry .amt{text-align:right;font-weight:700;white-space:nowrap}
+.del{min-height:36px;padding:4px 10px;font-size:13px;color:var(--pink);margin-top:4px}
+.empty{color:var(--mute);font-size:14px;padding:8px 0}
+#q{margin-bottom:6px}
+.reset{margin-top:16px;width:100%;color:var(--pink)}
+</style>
+</head>
+<body>
+<main>
+<header><h1>Carnival of Dreams</h1><p id="date"></p></header>
+<div class="stripe"></div>
+
+<section class="stats" aria-live="polite">
+<div class="stub"><small>Total people today</small><b id="tot">0</b></div>
+<div class="stub rev"><small>Total collection</small><b id="rev">0</b></div>
+<div class="stub"><small>Paid people</small><b id="pp">0</b></div>
+<div class="stub"><small>FOC people</small><b id="fp">0</b></div>
+</section>
+
+<section class="panel">
+<h2>New entry</h2>
+<div class="tabs">
+<button id="tPaid" class="on" onclick="setType('paid')">Paid customer</button>
+<button id="tFoc" onclick="setType('foc')">Owner / FOC</button>
+</div>
+<label for="name" id="nameL">Customer name</label>
+<input id="name" autocomplete="off" placeholder="e.g. Rahul Sharma">
+<label for="phone">Phone number</label>
+<input id="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="e.g. 9876543210">
+<label for="ppl">Number of people (including this person)</label>
+<div class="step">
+<button onclick="chg(-1)" aria-label="Fewer people">−</button>
+<input id="ppl" type="number" min="1" value="1" inputmode="numeric">
+<button onclick="chg(1)" aria-label="More people">+</button>
+</div>
+<div class="bill"><span id="billL">Total to pay</span><b id="bill">50</b></div>
+<div class="err" id="err" role="alert"></div>
+<button class="save" id="saveBtn" onclick="save()">Save entry</button>
+</section>
+
+<section class="panel">
+<div class="row"><h2>Today's entries</h2><span class="m" id="cnt" style="color:var(--mute);font-size:14px"></span></div>
+<input id="q" placeholder="Search by name or number" oninput="render()">
+<div id="list"></div>
+</section>
+
+<section class="panel">
+<h2>Google Sheets auto-save</h2>
+<label for="url">Apps Script web app URL</label>
+<input id="url" placeholder="https://script.google.com/macros/s/.../exec">
+<button class="save f" style="margin-top:10px" onclick="saveUrl()">Connect Google Sheet</button>
+<div class="err" id="sync" style="color:var(--teal)"></div>
+<h2 style="margin-top:18px">Manual backup</h2>
+<p class="m" style="color:var(--mute);font-size:14px;margin:0 0 10px">Tap the button, open your Google Sheet, tap cell A1 and paste. All of today's entries fill in as rows and columns.</p>
+<button class="save" style="margin-top:0" onclick="copySheet()">Copy for Google Sheets</button>
+<div class="err" id="cmsg" style="color:var(--teal)"></div>
+<textarea id="tsv" readonly style="display:none;width:100%;height:120px;margin-top:8px;font:13px monospace;border:2px solid var(--ink);border-radius:12px;padding:8px;background:var(--bg);color:var(--ink)"></textarea>
+</section>
+<button class="reset" onclick="resetDay()">Reset today's register</button>
+</main>
+
+<script>
+const PRICE = 50;
+const key = 'carnival-register-' + new Date().toISOString().slice(0,10);
+let list = [], type = 'paid';
+try { const r = localStorage.getItem(key); if (r) list = JSON.parse(r); } catch(e){}
+const $ = id => document.getElementById(id);
+const persist = () => { try { localStorage.setItem(key, JSON.stringify(list)); } catch(e){} };
+const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function setType(t){
+  type = t;
+  $('tPaid').className = t==='paid' ? 'on' : '';
+  $('tFoc').className = t==='foc' ? 'on f' : '';
+  $('saveBtn').className = 'save' + (t==='foc' ? ' f' : '');
+  $('nameL').textContent = t==='paid' ? 'Customer name' : 'Owner / FOC person name';
+  $('billL').textContent = t==='paid' ? 'Total to pay' : 'Free of charge';
+  bill();
+}
+function people(){ return Math.max(1, parseInt($('ppl').value) || 1); }
+function bill(){ $('bill').textContent = type==='paid' ? (people()*PRICE).toLocaleString() : '0'; }
+function chg(d){ $('ppl').value = Math.max(1, people()+d); bill(); }
+$('ppl').addEventListener('input', bill);
+
+function save(){
+  const name = $('name').value.trim(), phone = $('phone').value.trim();
+  if (!name) { $('err').textContent = 'Please enter the name.'; $('name').focus(); return; }
+  if (type==='paid' && !phone) { $('err').textContent = 'Please enter the phone number.'; $('phone').focus(); return; }
+  const n = people();
+  const en = {id:Date.now(), type, name, phone, n, amt: type==='paid' ? n*PRICE : 0, at:Date.now()};
+  list.push(en);
+  persist();
+  send({action:'add', id:en.id, date:new Date(en.at).toLocaleDateString(), time:new Date(en.at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), type:en.type==='foc'?'FOC':'Paid', name:en.name, phone:en.phone, n:en.n, amt:en.amt});
+  $('name').value = ''; $('phone').value = ''; $('ppl').value = 1; $('err').textContent = '';
+  bill(); render();
+  $('name').focus();
+}
+function del(id){ if (confirm('Delete this entry?')) { list = list.filter(e => e.id !== id); persist(); render(); send({action:'delete', id}); } }
+function resetDay(){ if (confirm("Delete ALL of today's entries?")) { list = []; persist(); render(); } }
+
+function render(){
+  const paid = list.filter(e => e.type==='paid'), foc = list.filter(e => e.type==='foc');
+  const pp = paid.reduce((a,e)=>a+e.n,0), fp = foc.reduce((a,e)=>a+e.n,0);
+  $('pp').textContent = pp; $('fp').textContent = fp; $('tot').textContent = pp+fp;
+  $('rev').textContent = (pp*PRICE).toLocaleString();
+  const q = $('q').value.trim().toLowerCase();
+  const shown = list.filter(e => !q || e.name.toLowerCase().includes(q) || e.phone.includes(q)).slice().reverse();
+  $('cnt').textContent = list.length + (list.length===1 ? ' entry' : ' entries');
+  $('list').innerHTML = shown.length ? shown.map(e => `
+    <div class="entry">
+      <div>
+        <div class="n">${esc(e.name)} <span class="pill ${e.type==='foc'?'f':''}">${e.type==='foc'?'FOC':'Paid'}</span></div>
+        <div class="m">${e.phone ? esc(e.phone) + ' · ' : ''}${e.n} ${e.n>1?'people':'person'} · ${new Date(e.at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>
+        <button class="del" onclick="del(${e.id})">Delete</button>
+      </div>
+      <div class="amt">${e.type==='foc' ? 'Free' : e.amt.toLocaleString()}</div>
+    </div>`).join('') : '<div class="empty">No entries yet. Fill the form above and tap Save entry.</div>';
+}
+function copySheet(){
+  const d = new Date().toLocaleDateString();
+  const rows = [['Date','Time','Type','Name','Phone','People','Amount']].concat(list.map(e => [d, new Date(e.at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), e.type==='foc'?'FOC':'Paid', e.name.replace(/\t/g,' '), e.phone, e.n, e.amt]));
+  const text = rows.map(r => r.join('\t')).join('\n');
+  const ta = $('tsv'); ta.value = text;
+  const ok = () => { $('cmsg').textContent = 'Copied. Now paste into your Google Sheet.'; };
+  const fb = () => { ta.style.display = 'block'; ta.select(); try { document.execCommand('copy'); ok(); } catch(e){ $('cmsg').textContent = 'Press and hold in the box below, choose Select all, then Copy.'; } };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fb); else fb();
+}
+$('date').textContent = new Date().toLocaleDateString([], {weekday:'long', day:'numeric', month:'long', year:'numeric'}) + ' · Entry register';
+bill(); render();
+
+// ---- Google Sheets auto-save ----
+let sheetUrl = '', queue = [], flushing = false;
+try { sheetUrl = localStorage.getItem('carnival-sheet-url') || ''; queue = JSON.parse(localStorage.getItem('carnival-sheet-queue') || '[]'); } catch(e){}
+const saveQ = () => { try { localStorage.setItem('carnival-sheet-queue', JSON.stringify(queue)); } catch(e){} };
+function syncStatus(){
+  $('sync').textContent = !sheetUrl ? 'Not connected. Paste your Apps Script URL above.' :
+    queue.length ? 'Connected. ' + queue.length + ' waiting to upload (will retry when online).' : 'Connected. All entries saved to Google Sheet.';
+}
+function saveUrl(){
+  sheetUrl = $('url').value.trim();
+  try { localStorage.setItem('carnival-sheet-url', sheetUrl); } catch(e){}
+  syncStatus(); flush();
+}
+function send(obj){ queue.push(obj); saveQ(); syncStatus(); flush(); }
+async function flush(){
+  if (!sheetUrl || flushing) return;
+  flushing = true;
+  while (queue.length) {
+    try {
+      await fetch(sheetUrl, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(queue[0])});
+      queue.shift(); saveQ();
+    } catch(e) { break; }
+  }
+  flushing = false; syncStatus();
+}
+window.addEventListener('online', flush);
+$('url').value = sheetUrl; syncStatus(); flush();
+</script>
+</body>
+</html>
